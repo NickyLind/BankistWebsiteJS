@@ -145,12 +145,50 @@ const loadImg = entries => {
   entry.target.addEventListener('load', () => {
     entry.target.classList.remove('lazy-img');
   });
-  observer.unobserve(entry.target);
+  sectionObserver.unobserve(entry.target);
 };
 
-imgObserver = new IntersectionObserver(loadImg, {
+const imgObserver = new IntersectionObserver(loadImg, {
   root: null,
   threshold: 0,
 });
 
 imgTargets.forEach(img => imgObserver.observe(img));
+
+// Slider 
+const slidesArray = document.querySelectorAll('.slide');
+const btnLeft = document.querySelector('.slider__btn--left');
+const btnRight = document.querySelector('.slider__btn--right');
+let currentSlide = 0; //would handle this with state in a real application
+const maxSlide = slidesArray.length;
+
+const goToSlide = currentSlide => {
+  slidesArray.forEach((slide, index) => {
+    slide.style.transform = `translateX(${100 * (index - currentSlide)}%)`
+  });
+};
+
+goToSlide(0);
+
+// Next Slide
+const nextSlide = () => {
+  if (currentSlide == maxSlide - 1) {
+    currentSlide = 0;
+  } else {
+    currentSlide++;
+  }
+  goToSlide(currentSlide);
+};
+
+// Prev Slide
+const prevSlide = () => {
+  if (currentSlide === 0) {
+    currentSlide = maxSlide - 1;
+  } else {
+    currentSlide--;
+  }
+  goToSlide(currentSlide);
+};
+
+btnRight.addEventListener('click', nextSlide);
+btnLeft.addEventListener('click', prevSlide);
